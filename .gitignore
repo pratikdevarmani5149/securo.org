@@ -1,0 +1,34 @@
+# Node / JS
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Next.js
+.next/
+out/
+.vercel/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Tests / coverage
+coverage/
+
+# Cairo / Scarb
+contracts/target/
+
+# Build artifacts
+dist/
+apps/**/dist/
+packages/**/dist/
+

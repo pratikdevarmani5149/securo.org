@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@starkcipher/crypto": ["../../packages/crypto/src/index.ts"]
+    }
+  }
+}
+

@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>StarkCipher (Static MVP)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #07080b;
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.09);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.68);
+        --line: rgba(255, 255, 255, 0.12);
+        --accent: #7c5cff;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(1200px 800px at 20% 10%, rgba(124, 92, 255, 0.22), transparent 60%),
+          radial-gradient(900px 700px at 85% 20%, rgba(24, 209, 164, 0.12), transparent 55%),
+          var(--bg);
+        color: var(--text);
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 18px 48px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 900px) {
+        .row { grid-template-columns: 1fr; }
+      }
+      .panel {
+        background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        backdrop-filter: blur(10px);
+      }
+      .panel h2 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .input {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.22);
+        color: var(--text);
+        padding: 10px 12px;
+        outline: none;
+      }
+      .input:focus {
+        border-color: rgba(124, 92, 255, 0.55);
+        box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.18);
+      }
+      .btn {
+        cursor: pointer;
+        border: 1px solid rgba(124, 92, 255, 0.45);
+        background: linear-gradient(180deg, rgba(124, 92, 255, 0.20), rgba(124, 92, 255, 0.08));
+        color: var(--text);
+        padding: 10px 12px;
+        border-radius: 12px;
+        transition: transform 120ms ease, border-color 120ms ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(124, 92, 255, 0.75);
+      }
+      .btn.secondary {
+        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .stack { display: grid; gap: 10px; }
+      .msg {
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 14px;
+        padding: 12px;
+      }
+      .msg .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .msg .body {
+        margin-top: 10px;
+        white-space: pre-wrap;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+      .warn {
+        color: rgba(255, 255, 255, 0.82);
+        border-left: 3px solid rgba(255, 77, 109, 0.75);
+        padding-left: 10px;
+        font-size: 12px;
+      }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      textarea.input { resize: vertical; }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:24px;font-weight:650;letter-spacing:-0.02em;">StarkCipher (Static MVP)</div>
+          <div style="color:var(--muted);margin-top:6px;">
+            Local-only encrypted chat preview (no backend / no Next.js).
+          </div>
+        </div>
+        <div class="pill">
+          <span>Mode</span>
+          <span class="mono">offline-encrypted-demo</span>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:18px;">
+        <section class="panel stack">
+          <h2>Compose</h2>
+          <label>
+            <div class="pill" style="margin-bottom:8px;">To (wallet)</div>
+            <input id="to" class="input mono" placeholder="0x..." />
+          </label>
+          <label>
+            <div class="pill" style="margin-bottom:8px;">Room id (0 = direct)</div>
+            <input id="room-id" class="input mono" value="0" />
+          </label>
+          <label>
+            <div class="pill" style="margin-bottom:8px;">Message</div>
+            <textarea id="message" class="input" rows="4"></textarea>
+          </label>
+          <label>
+            <div class="pill" style="margin-bottom:8px;">Secret code</div>
+            <input id="secret" class="input" />
+          </label>
+          <label>
+            <div class="pill" style="margin-bottom:8px;">Expires in (sec, 0=never)</div>
+            <input id="expires" class="input mono" value="3600" />
+          </label>
+          <button id="encrypt-btn" class="btn">Encrypt locally (no chain)</button>
+          <div class="warn" style="margin-top:6px;">
+            This static page shows the UX and client-side AES-GCM encryption. On-chain storage +
+            wallet integration run in the full Next.js app once your SWC/Node environment is fixed.
+          </div>
+        </section>
+
+        <section class="panel stack">
+          <h2>Encrypted payload</h2>
+          <div id="enc-container" class="msg" style="display:none;">
+            <div class="meta">
+              <span class="mono" id="enc-meta"></span>
+              <button id="toggle-plaintext" class="btn secondary" style="font-size:12px;padding:6px 10px;">
+                Hold to reveal
+              </button>
+            </div>
+            <div class="body">
+              <div id="ciphertext-view" style="font-size:12px;color:var(--muted);word-break:break-all;"></div>
+              <div id="plaintext-view" style="display:none;margin-top:8px;"></div>
+            </div>
+          </div>
+          <div id="enc-empty" style="color:var(--muted);font-size:13px;">
+            Encrypt a message on the left to see the ciphertext that would be sent to Starknet.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      async function deriveKey(secret) {
+        const enc = new TextEncoder();
+        const material = enc.encode(secret);
+        const hash = await crypto.subtle.digest("SHA-256", material);
+        return crypto.subtle.importKey("raw", hash, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+      }
+
+      async function aesGcmEncrypt(plaintextBytes, secret) {
+        const key = await deriveKey(secret);
+        const nonce = crypto.getRandomValues(new Uint8Array(12));
+        const aad = new Uint8Array();
+        const ct = await crypto.subtle.encrypt(
+          { name: "AES-GCM", iv: nonce, additionalData: aad },
+          key,
+          plaintextBytes
+        );
+        return { ciphertext: new Uint8Array(ct), nonce, aad };
+      }
+
+      function toHex(bytes) {
+        return Array.from(bytes)
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      const encryptBtn = document.getElementById("encrypt-btn");
+      const encContainer = document.getElementById("enc-container");
+      const encEmpty = document.getElementById("enc-empty");
+      const encMeta = document.getElementById("enc-meta");
+      const ciphertextView = document.getElementById("ciphertext-view");
+      const plaintextView = document.getElementById("plaintext-view");
+      const togglePlaintext = document.getElementById("toggle-plaintext");
+
+      encryptBtn.addEventListener("click", async () => {
+        const to = document.getElementById("to").value.trim() || "0xDEMO";
+        const roomId = document.getElementById("room-id").value.trim() || "0";
+        const msg = document.getElementById("message").value;
+        const secret = document.getElementById("secret").value;
+        const expires = document.getElementById("expires").value.trim() || "0";
+
+        if (!msg || !secret) {
+          alert("Please fill message and secret code.");
+          return;
+        }
+
+        const now = Math.floor(Date.now() / 1000);
+        const expTs = expires === "0" ? 0 : now + Number(expires);
+        const metaText = `to=${to} room=${roomId} created=${now} expires=${expTs}`;
+
+        const enc = new TextEncoder();
+        const ptBytes = enc.encode(msg);
+        const { ciphertext, nonce } = await aesGcmEncrypt(ptBytes, secret);
+
+        encMeta.textContent = metaText;
+        ciphertextView.textContent =
+          "nonce=0x" + toHex(nonce) + "\\n" +
+          "ciphertext=0x" + toHex(ciphertext);
+        plaintextView.textContent = msg;
+
+        encEmpty.style.display = "none";
+        encContainer.style.display = "block";
+      });
+
+      // "Hold to reveal" plaintext (best-effort anti-screenshot UX)
+      togglePlaintext.addEventListener("mousedown", () => {
+        plaintextView.style.display = "block";
+      });
+      togglePlaintext.addEventListener("mouseup", () => {
+        plaintextView.style.display = "none";
+      });
+      togglePlaintext.addEventListener("mouseleave", () => {
+        plaintextView.style.display = "none";
+      });
+      togglePlaintext.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        plaintextView.style.display = "block";
+      }, { passive: false });
+      togglePlaintext.addEventListener("touchend", () => {
+        plaintextView.style.display = "none";
+      });
+    </script>
+  </body>
+ </html>
+

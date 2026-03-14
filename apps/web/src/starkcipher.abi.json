@@ -1,0 +1,58 @@
+[
+  {
+    "type": "function",
+    "name": "send_message",
+    "inputs": [
+      { "name": "to", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "room_id", "type": "core::felt252" },
+      { "name": "expires_at", "type": "core::integer::u64" },
+      { "name": "burn_after_read", "type": "core::bool" },
+      { "name": "anonymous", "type": "core::bool" },
+      { "name": "integrity_hash", "type": "core::felt252" },
+      { "name": "secret_commitment", "type": "core::felt252" },
+      { "name": "verifier", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "ciphertext", "type": "core::array::Array::<core::felt252>" },
+      { "name": "nonce", "type": "core::array::Array::<core::felt252>" },
+      { "name": "aad", "type": "core::array::Array::<core::felt252>" }
+    ],
+    "outputs": [{ "type": "core::integer::u64" }],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "get_message",
+    "inputs": [{ "name": "msg_id", "type": "core::integer::u64" }],
+    "outputs": [
+      {
+        "type": "starkcipher::starkcipher::starkcipher::MsgRecord"
+      }
+    ],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "unlock_message",
+    "inputs": [
+      { "name": "msg_id", "type": "core::integer::u64" },
+      { "name": "proof", "type": "core::array::Array::<core::felt252>" },
+      { "name": "public_inputs", "type": "core::array::Array::<core::felt252>" }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "delete_message",
+    "inputs": [{ "name": "msg_id", "type": "core::integer::u64" }],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "get_next_msg_id",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u64" }],
+    "state_mutability": "view"
+  }
+]
+
